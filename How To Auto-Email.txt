@@ -1,0 +1,43 @@
+
+_Views_
+The table NotificationListEmailGroups has a field ViewName. Enter the name of a view here. This view will fill the table
+in the email. If the report includes Dealership and/or Dealership Group, call the columns DLR and GRP.
+_Optional Filter View_
+A second view with the same name with "Filter" appended can be created for formatting the report.
+This view should have exactly one row with the exact same column names. 
+Values can be:
+ASC or DESC. Use these to sort this column ascending or descending.
+SUM, AVG, or CNT. Use these to Sum, Average, or Count rows by Dealership or Group.
+
+_Recipients_
+Table NotificationListEmailGroups links ListNames to JobTitles.
+Some JobTitles are Office Positions (JobTitles.OfficePosition = 1). People in these positions get emails for all locations.
+Other positions only get emails for their Dealership, or if they have a Dealership Group (eg. Autostar USA) as their Home Dealership, the whole Group.
+
+_Running_
+Emails can be sent by schedule or by event.
+
+For a simple schedule that runs once per day, you can set it up in the table NotificationListsTitles.
+There is a trigger on IsDaily. When that is set to 1, a job is added to run on the days of the week 
+and time entered into this table. The job's names start with "Email Job:"
+
+When the schedule is more complicated or it needs to be run by event, you can still use the JobCodes recipients and the views, 
+just don't enter IsDaily.
+
+To add it to a trigger, call it like this:
+    EXEC AutoEmailsSend 'ListName'
+    Notice that this doesn't have any parameters, so it can't refer to just the INSERTED rows or anything.
+
+
+Stored Procedures:
+AutoEmailsSend
+AutoEmailHTML
+AutoEmailAddresses
+
+Tables:
+NotificationListsTitles
+NotificationListEmailGroups
+
+Views:
+AutoEmailAddressList
+
