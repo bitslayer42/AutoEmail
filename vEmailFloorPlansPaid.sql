@@ -2,9 +2,10 @@
 ALTER VIEW vEmailFloorPlansPaidFormat AS
 	SELECT NULL GRP, NULL DLR, NULL Date, NULL [ ], NULL [Stock #], NULL Vin, NULL Year, NULL Make,
 	'SUM' [Floor Plan], NULL [Days],NULL [Paid Date], NULL [Paid Time], NULL [Paid Person]
-	go
+GO
+---------------------------------------------------------------------------------------------------
 ALTER VIEW vEmailFloorPlansPaid AS
--- select * from vEmailFloorPlansPaid
+-- select * from vEmailFloorPlansPaidFormat select * from vEmailFloorPlansPaid
 	SELECT Floor_Plan_Dealership AS GRP, 
 	Store AS DLR, Date, LEFT(new_used_certused,1) AS [ ], 
 	deals.Stock_Number [Stock #], deals.Vin Vin, deals.Year, deals.Make,

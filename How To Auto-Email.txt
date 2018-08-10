@@ -22,7 +22,7 @@ There is a trigger on IsDaily. When that is set to 1, a job is added to run on t
 and time entered into this table. The job's names start with "Email Job:"
 
 When the schedule is more complicated or it needs to be run by event, you can still use the JobCodes recipients and the views, 
-just don't enter IsDaily.
+just don't check IsDaily.
 
 To add it to a trigger, call it like this:
     EXEC AutoEmailsSend 'ListName'

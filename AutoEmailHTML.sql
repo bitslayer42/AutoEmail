@@ -6,12 +6,12 @@ BEGIN /*
 DECLARE @ResultsHTML NVARCHAR(MAX),
 		@RetVal BIT
 
-EXEC @RetVal = AutoEmailHTML @ViewName = 'vEmailReconCheckInReady',
+EXEC @RetVal = AutoEmailHTML @ViewName = 'vEmailFloorPlansPaid',
 					@EmailTitle = 'This is the title',
 					@ALL = 1,
 					@GRP = NULL,
 					@DLR = NULL,
-					@AddressList= 'jon.wilson@moo.com',
+					@AddressList= 'jon.wilson@autostarusa.com',
 					@ListName= 'email',
 					@ResultsHTML = @ResultsHTML OUTPUT
 SELECT @RetVal
@@ -117,23 +117,23 @@ SELECT @ResultsHTML
 		END
 		IF @Aggregate = 'SUM'
 		BEGIN
-			SET @SubGroupSQL = @SubGroupSQL + '''<td>'' + CONVERT(NVARCHAR(10),SUM(CONVERT(INT,ROUND([' + @ColName + '],0)))) + ''</td>'' + '
-			SET @SubDealerSQL = @SubDealerSQL + '''<td>'' + CONVERT(NVARCHAR(10),SUM(CONVERT(INT,ROUND([' + @ColName + '],0)))) + ''</td>'' + '
-			SET @TotalSQL = @TotalSQL + '''<td>'' + CONVERT(NVARCHAR(10),SUM(CONVERT(INT,ROUND([' + @ColName + '],0)))) + ''</td>'' + '
+			SET @SubGroupSQL = @SubGroupSQL + '''<td>'' + ISNULL(CONVERT(NVARCHAR(10),SUM(CONVERT(INT,ROUND([' + @ColName + '],0)))),'''') + ''</td>'' + '
+			SET @SubDealerSQL = @SubDealerSQL + '''<td>'' + ISNULL(CONVERT(NVARCHAR(10),SUM(CONVERT(INT,ROUND([' + @ColName + '],0)))),'''') + ''</td>'' + '
+			SET @TotalSQL = @TotalSQL + '''<td>'' + ISNULL(CONVERT(NVARCHAR(10),SUM(CONVERT(INT,ROUND([' + @ColName + '],0)))),'''') + ''</td>'' + '
 			SET @ReportHasTotals = 1
 		END
 		ELSE IF @Aggregate = 'AVG'
 		BEGIN
-			SET @SubGroupSQL = @SubGroupSQL + '''<td>'' + CONVERT(NVARCHAR(10),AVG(CONVERT(INT,ROUND([' + @ColName + '],0)))) + ''</td>'' + '
-			SET @SubDealerSQL = @SubDealerSQL + '''<td>'' + CONVERT(NVARCHAR(10),AVG(CONVERT(INT,ROUND([' + @ColName + '],0)))) + ''</td>'' + '
-			SET @TotalSQL = @TotalSQL + '''<td>'' + CONVERT(NVARCHAR(10),AVG(CONVERT(INT,ROUND([' + @ColName + '],0)))) + ''</td>'' + '
+			SET @SubGroupSQL = @SubGroupSQL + '''<td>'' + ISNULL(CONVERT(NVARCHAR(10),AVG(CONVERT(INT,ROUND([' + @ColName + '],0)))),'''') + ''</td>'' + '
+			SET @SubDealerSQL = @SubDealerSQL + '''<td>'' + ISNULL(CONVERT(NVARCHAR(10),AVG(CONVERT(INT,ROUND([' + @ColName + '],0)))),'''') + ''</td>'' + '
+			SET @TotalSQL = @TotalSQL + '''<td>'' + ISNULL(CONVERT(NVARCHAR(10),AVG(CONVERT(INT,ROUND([' + @ColName + '],0)))),'''') + ''</td>'' + '
 			SET @ReportHasTotals = 1
 		END
 		ELSE IF @Aggregate = 'CNT'
 		BEGIN
-			SET @SubGroupSQL = @SubGroupSQL + '''<td>'' + CONVERT(NVARCHAR(10),COUNT(*)) + ''</td>'' + '
-			SET @SubDealerSQL = @SubDealerSQL + '''<td>'' + CONVERT(NVARCHAR(10),COUNT(*)) + ''</td>'' + '
-			SET @TotalSQL = @TotalSQL + '''<td>'' + CONVERT(NVARCHAR(10),COUNT(*)) + ''</td>'' + '
+			SET @SubGroupSQL = @SubGroupSQL + '''<td>'' + ISNULL(CONVERT(NVARCHAR(10),COUNT(*)),'''') + ''</td>'' + '
+			SET @SubDealerSQL = @SubDealerSQL + '''<td>'' + ISNULL(CONVERT(NVARCHAR(10),COUNT(*)),'''') + ''</td>'' + '
+			SET @TotalSQL = @TotalSQL + '''<td>'' + ISNULL(CONVERT(NVARCHAR(10),COUNT(*)),'''') + ''</td>'' + '
 			SET @ReportHasTotals = 1
 		END
 		ELSE IF @ColName = 'GRP' 
@@ -193,7 +193,8 @@ SELECT @ResultsHTML
 
 	SET @FinalSQL = @DetailSQL + IIF(@NoGrpTot = 1,'',@SubGroupSQL) + IIF(@NoDlrTot = 1,'',@SubDealerSQL) + IIF(@NoRptTot=1,'',@TotalSQL) 
 		+ ' ORDER BY ' + @OrderByCols + 'GRP,DLR,SEC'
-	-- SELECT @FinalSQL
+
+		--SELECT @FinalSQL return
 
 	INSERT INTO @tblHTML(SEC,GRP,DLR,RowsHTML)
 	EXEC(@FinalSQL)
